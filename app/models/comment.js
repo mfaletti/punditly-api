@@ -18,7 +18,7 @@ exports = module.exports = function(app, mongoose) {
 	};
 	
 	CommentSchema.statics.findByUser = function(uid, cb) {
-		return this.findOne({user:uid}, cb());
+		return this.findOne({user:uid}, cb);
 	};
 	
 	app.db.model('Comment', CommentSchema, 'comments');
