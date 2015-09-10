@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+.DS_Store
+build
+dist
+.gitmodules
+.tm_sync.config

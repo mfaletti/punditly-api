@@ -1,0 +1,212 @@
+<% include ../layout.html %>
+<% include ../sidenav.html %>
+<div class="large-9 medium-8 columns">
+	<section class="card" id="get_users">
+		<header>
+			<h2>
+				<span>GET</span>
+				<code>/users/:id</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/users/52e20174932f4fe10c000002</code>
+		</div>
+		<div class="card-description">
+			<p>Get information about a user</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>id <span>required</span></th>
+						<td>The id of the user to get.</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>GET</td>
+							<td>http://api.punditly.com/1/users/52e20174932f4fe10c000002</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+  "data": {
+    "id": "52e20174932f4fe10c000002",
+    "updated_at": "2014-01-24T06:00:20.716Z",
+    "username": "djeji",
+    "phone": null,
+    "following_count": 120,
+    "followers_count": 100,
+    "profile_image_url": "",
+    "is_verified": false,
+    "is_private": false,
+    "location": null,
+    "created_at": "2014-01-24T06:00:20.624Z",
+    "bio": null,
+    "url": null,
+    "name": null
+  }
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+	<section class="card" id="post_profile">
+		<header>
+			<h2>
+				<span>POST</span>
+				<code>/account/profile</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/account/profile</code>
+		</div>
+		<div class="card-description">
+			<p>updates the properties of the authenticating user's account.</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>name <span>optional</span></th>
+						<td>Full name associated with the profile. Maximum of 20 characters.</td>
+					</tr>
+					<tr>
+						<th>location <span>optional</span></th>
+						<td>The city or country describing where the account user is located. maximum of 30 characters.</td>
+					</tr>
+					<tr>
+						<th>url <span>optional</span></th>
+						<td>URL associated with the profile. Maximum of 100 characters.</td>
+					</tr>
+					<tr>
+						<th>bio <span>optional</span></th>
+						<td>A description of the user owning the profile. Maximum of 140 characters.</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>POST</td>
+							<td>http://api.punditly.com/1/account/profile</td>
+						</tr>
+						<tr>
+							<td>POST Data</td>
+							<td>name=deji%20faletti&bio=Azonto%20Master</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+	"data":{
+	  "bio": "Azonto Master",
+	  "id": "52daf3421f31a7e954000001",
+	  "location": "atlanta",
+	  "name": "deji faletti",
+	  "updated_at": "2014-01-19T03:09:41.834Z",
+	  "url": "punditly.com",
+	  "username": "djmm",
+	  "following_count": 110,
+	  "followers_count": 20,
+	  "is_private": false,
+	  "created_at": "2014-01-18T21:33:54.366Z",
+	}
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+	<section class="card" id="post_profile_image">
+		<header>
+			<h2>
+				<span>POST</span>
+				<code>/account/profile_image</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/account/profile_image</code>
+		</div>
+		<div class="card-description">
+			<p>update profile image for the authenticating user.</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>image <span>required</span></th>
+						<td>The image for the profile. Must be a valid PNG or JPG and less than 700KB in size.</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>POST</td>
+							<td>http://api.punditly.com/1/account/profile_image</td>
+						</tr>
+						<tr>
+							<td>POST Data</td>
+							<td>image=...</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+					
+{
+  "response": {
+    "status": 200
+  },
+  "data": {
+    "id": "52e200c8932f4fe10c000001",
+    "updated_at": "2014-02-03T14:02:22.098Z",
+    "username": "djmm",
+    "phone": null,
+    "following_count": 12,
+    "followers_count": 10,
+    "profile_image_url": "http://cdn.punditly.com/profile_images/644522235/cdjlccey99gy36j3em67.jpeg",
+    "is_verified": false,
+    "is_private": false,
+    "location": null,
+    "created_at": "2014-01-24T05:57:28.336Z",
+    "bio": null,
+    "url": null,
+    "name": Mike Dean
+  }
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+</div>
+<% include ../footer.html %>

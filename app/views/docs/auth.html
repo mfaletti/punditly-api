@@ -1,0 +1,142 @@
+<% include ../layout.html %>
+<% include ../sidenav.html %>
+<div class="large-9 medium-8 columns">
+	<section class="card" id="register">
+		<header>
+			<h2>
+				<span>POST</span>
+				<code>/auth/register</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/auth/register</code>
+		</div>
+		<div class="card-description">
+			<p>creates a new user and returns a json object representation of the newly created user</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>email <span>required</span></th>
+						<td>The user email</td>
+					</tr>
+					<tr>
+						<th>username <span>required</span></th>
+						<td>The username</td>
+					</tr>
+					<tr>
+						<th>password <span>required</span></th>
+						<td>The user password</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="code-response">
+				<header><h5>Sample Response</h5></header>
+				<pre class='prettyprint'><code>
+{
+  "response": {
+    "status": 200
+  },
+  "data": {
+    "id": "52e20174932f4fe10c000002",
+    "updated_at": "2014-01-24T06:00:20.716Z",
+    "username": "djeji",
+    "phone": null,
+    "following_count": 0,
+    "followers_count": 0,
+    "profile_image_url": "",
+    "is_verified": false,
+    "is_private": false,
+    "location": null,
+    "created_at": "2014-01-24T06:00:20.624Z",
+    "bio": null,
+    "url": null,
+    "name": null
+  }
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+	<section class="card" id="login">
+		<header>
+			<h2>
+				<span>GET</span>
+				<code>/auth/login</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/auth/login</code>
+		</div>
+		<div class="card-description">
+			<p>Log a user into the application</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>username <span>required</span></th>
+						<td>The username for the authenticating user</td>
+					</tr>
+					<tr>
+						<th>password <span>required</span></th>
+						<td>The password for the authenticating user</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+
+{
+  "response": {
+    "status": 200
+  },
+  "data": {
+    "id": "52daf3421f31a7e954000001",
+    "updated_at": "2014-01-18T21:33:54.517Z",
+    "username": "djmm",
+    "following_count": 0,
+    "followers_count": 0,
+    "is_private": false,
+    "created_at": "2014-01-18T21:33:54.366Z",
+    "bio": null,
+		"url": null,
+		"name": null
+  }
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+	<section class="card" id="logout">
+		<header>
+			<h2>
+				<span>POST</span>
+				<code>/auth/logout</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/auth/logout</code>
+		</div>
+		<div class="card-description">
+			<p>Log the authenticated user out of the application</p>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+</div>
+<% include ../footer.html %>

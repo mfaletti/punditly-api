@@ -1,0 +1,365 @@
+<% include ../layout.html %>
+<% include ../sidenav.html %>
+<div class="large-9 medium-8 columns">
+	<section class="card" id="get_comment">
+		<header>
+			<h2>
+				<span>GET</span>
+				<code>/comments/:id</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/comments/1234</code>
+		</div>
+		<div class="card-description">
+			<p>Returns a single comment, specified by the id parameter.</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>id <span>required</span></th>
+						<td>The numerical id of the comment</td>
+					</tr>
+					<tr>
+						<th>trim_user <span>optional</span></th>
+						<td>When set to true, each comment returned will include a user object including only the comment author's numerical ID. Omit this parameter to receive the complete user object.</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>GET</td>
+							<td>http://api.punditly.com/1/comments/1234?trim_user=true</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+  "data": {
+    "id": "52ddb9ccb8da75d450000001",
+    "text": "goal",
+    "event_id": "1",
+    "share_count": 0,
+    "favorite_count": 0,
+    "created_at": "2014-01-21T00:05:32.153Z",
+    "user": {
+      "id": "52daf3421f31a7e954000001"
+    }
+  }
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+	<section class="card" id="post_comment">
+		<header>
+			<h2>
+				<span>POST</span>
+				<code>/comments/create</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/comments/create</code>
+		</div>
+		<div class="card-description">
+			<p>Creates a new commentary comment</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>text <span>required</span></th>
+						<td>The comment to create.</td>
+					</tr>
+					<tr>
+						<th>in_reply_to_comment_id <span>optional</span></th>
+						<td>The ID of a existing comment that this comment replies to</td>
+					</tr>
+					<tr>
+						<th>trim_user <span>optional</span></th>
+						<td>When set to true, the comment returned will include a user object including only the comment author's ID</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>POST</td>
+							<td>http://api.punditly.com/1/comments/create?trim_user=true</td>
+						</tr>
+						<tr>
+							<td>POST Data</td>
+							<td>text=Chelsea beat Man City 1-0 at the Etihad</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+  "data": {
+    "id":"52f847140e1295ff02000001",
+    "text":"chelsea top the PL",
+    "user":{
+      "id":"52e200c8932f4fe10c000001"
+    },
+    "event_id":"",
+    "in_reply_to":null,
+    "share_count":0,
+    "favorite_count":0,
+    "created_at":"2014-02-10T03:27:16.825Z",
+    "in_reply_to_comment_id":null
+  }
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+	<section class="card" id="get_home_timeline">
+		<header>
+			<h2>
+				<span>GET</span>
+				<code>/comments/home_timeline</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/comments/home_timeline</code>
+		</div>
+		<div class="card-description">
+			<p>Returns the most recent comments posted to the authenticating user's home stream, which is made up of the users and team symbols they follow</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>limit <span>optional</span></th>
+						<td>Specifies the number of results to retrieve. Must be less than or equal to 50. Defaults to 20</td>
+					</tr>
+					<tr>
+						<th>since_id <span>optional</span></th>
+						<td>Returns results with an ID greater than (more recent than) the specified ID</td>
+					</tr>
+					<tr>
+						<th>max_id <span>optional</span></th>
+						<td>Returns results with an ID less than (older than) or equal to the specified ID</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>POST</td>
+							<td>http://api.punditly.com/1/comments/home_timeline</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+  "data": [
+    {
+      "_id": "52f8de8bfb19b5802f000002",
+      "id": "52f8de8bfb19b5802f000002",
+      "text": "chelsea top the table with 51 pts",
+      "user": {
+        "id": "52e200c8932f4fe10c000001",
+        "updated_at": "2014-02-13T05:23:13.266Z",
+        "username": "djmm",
+        "phone": null,
+        "following_count": 29,
+        "followers_count": 100,
+        "profile_image_url": "https://s3.amazonaws.com/cdn.punditly.com/profile_images/52e200c8932f4fe10c000001/photo.jpeg",
+        "is_verified": false,
+        "is_private": false,
+        "location": null,
+        "created_at": "2014-01-24T05:57:28.336Z",
+        "bio": null,
+        "url": null,
+        "name": null
+      },
+      "event_id": "",
+      "share_count": 0,
+      "favorite_count": 0,
+      "created_at": "2014-02-10T14:13:31.016Z",
+      "in_reply_to_comment_id": null,
+      "__v": 0
+    },
+    {
+      "_id": "52f8de6afb19b5802f000001",
+      "id": "52f8de6afb19b5802f000001",
+      "text": "Hazaaard! What a goal!",
+      "user": {
+        "id": "52e200c8932f4fe10c000001",
+        "updated_at": "2014-02-13T05:23:13.266Z",
+        "username": "djmm",
+        "phone": null,
+        "following_count": 2,
+        "followers_count": 0,
+        "profile_image_url": "https://s3.amazonaws.com/cdn.punditly.com/profile_images/52e200c8932f4fe10c000001/photo.jpeg",
+        "is_verified": false,
+        "is_private": false,
+        "location": null,
+        "created_at": "2014-01-24T05:57:28.336Z",
+        "bio": null,
+        "url": null,
+        "name": null
+      },
+      "event_id": "",
+      "share_count": 0,
+      "favorite_count": 0,
+      "created_at": "2014-02-10T14:12:58.685Z",
+      "in_reply_to_comment_id": null,
+      "__v": 0
+    }
+  ]
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+	<section class="card" id="get_mentions">
+		<header>
+			<h2>
+				<span>GET</span>
+				<code>/comments/mentions</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/comments/mentions</code>
+		</div>
+		<div class="card-description">
+			<p>Returns the 20 most recent comments containing the authenticating user's handle (@user_name).</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>limit <span>optional</span></th>
+						<td>Specifies the number of results to retrieve. Must be less than or equal to 50. Defaults to 20</td>
+					</tr>
+					<tr>
+						<th>since_id <span>optional</span></th>
+						<td>Returns results with an ID greater than (more recent than) the specified ID</td>
+					</tr>
+					<tr>
+						<th>max_id <span>optional</span></th>
+						<td>Returns results with an ID less than (older than) or equal to the specified ID</td>
+					</tr>
+					<tr>
+						<th>trim_user <span>optional</span></th>
+						<td>When set to true, the comment returned will include a user object including only the comment author's ID</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>POST</td>
+							<td>http://api.punditly.com/1/comments/mentions</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+  "data": [
+    {
+      "_id": "52f8de8bfb19b5802f000002",
+      "id": "52f8de8bfb19b5802f000002",
+      "text": "@djmm What a game.",
+      "user": {
+        "id": "4321",
+        "updated_at": "2014-02-13T05:23:13.266Z",
+        "username": "cfcDeji",
+        "phone": null,
+        "following_count": 29,
+        "followers_count": 100,
+        "profile_image_url": "https://s3.amazonaws.com/cdn.punditly.com/profile_images/4321/photo.jpeg",
+        "is_verified": false,
+        "is_private": false,
+        "location": null,
+        "created_at": "2014-01-24T05:57:28.336Z",
+        "bio": null,
+        "url": null,
+        "name": null
+      },
+      "event_id": "",
+      "share_count": 0,
+      "favorite_count": 0,
+      "created_at": "2014-02-10T14:13:31.016Z",
+      "in_reply_to_comment_id": null,
+      "__v": 0
+    },
+    {
+      "_id": "52f8de6afb19b5802f000001",
+      "id": "52f8de6afb19b5802f000001",
+      "text": "@djmm something about Hazard",
+      "user": {
+        "id": "1234",
+        "updated_at": "2014-02-13T05:23:13.266Z",
+        "username": "JoseM",
+        "phone": null,
+        "following_count": 21,
+        "followers_count": 60,
+        "profile_image_url": "https://s3.amazonaws.com/cdn.punditly.com/profile_images/1234/photo.jpeg",
+        "is_verified": false,
+        "is_private": false,
+        "location": null,
+        "created_at": "2014-01-24T05:57:28.336Z",
+        "bio": null,
+        "url": null,
+        "name": null
+      },
+      "event_id": "",
+      "share_count": 0,
+      "favorite_count": 0,
+      "created_at": "2014-02-10T14:12:58.685Z",
+      "in_reply_to_comment_id": null,
+      "__v": 0
+    }
+  ]
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+</div>
+<% include ../footer.html %>

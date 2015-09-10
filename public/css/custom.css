@@ -1,0 +1,73 @@
+body{
+	color: #777;
+}
+.side-nav li {
+	list-style:none;
+}
+.card header, .card-info {
+	position: relative;
+}
+.card header h2 {
+	margin: 0;
+	padding: 4px 0 6px;
+}
+.card-info {
+	border-bottom: 1px solid #ddd;
+}	
+.card-info, .card-description {
+	padding: 10px 0px;
+	position:relative;
+}
+.card-info p, .card-description p {
+	margin: 5px 0;
+}
+.card caption {
+	position: relative;
+	margin: 0 0 5px;
+	z-index: 1;
+}
+.card caption, .card th {
+	font-size: 12px;
+	font-weight: bold;
+	text-align:left;
+}
+.card th span {
+	display: block;
+	color: #999;
+	font-weight: normal;
+	padding: 5px 0;
+}
+.card td {
+	vertical-align: top;
+}
+/*.card pre {
+	width: 500px;
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap !important;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	word-wrap: break-word;
+}*/
+.card pre {
+background-color: #fff;
+border: 1px solid #ddd;
+border-bottom: 1px solid #aaa;
+border-radius: 5px;
+padding: 15px;
+margin: 25px 0;
+}
+.card pre code {
+	display: block;
+	overflow: auto;
+	font-size: 12px;
+/*	border: 1px solid #ccc;
+	background-color: #f8f8f8;*/
+	line-height: 1.3;
+	font-weight:normal;
+}
+
+/** prettyprint overrides **/
+pre.prettyprint {
+padding: 2px;
+
+}

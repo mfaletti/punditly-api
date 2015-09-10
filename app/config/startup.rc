@@ -1,0 +1,78 @@
+#!/bin/sh
+
+#
+# chkconfig: 35 99 99
+# description: Node.js /home/nodejs/sample/app.js
+#
+
+. /etc/rc.d/init.d/functions
+
+USER="nodejs"
+
+DAEMON="/usr/local/bin/node"
+ROOT_DIR="/var/www/punditly-api"
+
+SERVER="$ROOT_DIR/index.js"
+LOG_FILE="/var/log/node.log"
+
+LOCK_FILE="/var/lock/subsys/node-api"
+export NODE_ENV=production
+export AWS_ACCESS_KEY_ID=AKIAJRIM4A2WLKQ27SRA
+export AWS_SECRET_ACCESS_KEY=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
+export AWS_REGION=us-east-1
+ 
+do_start()
+{
+        if [ ! -f "$LOCK_FILE" ] ; then
+                echo -n $"Starting $SERVER: "
+                daemon --user "$USER" "$DAEMON $SERVER >> $LOG_FILE &" && echo_success || echo_failure
+                RETVAL=$?
+                echo
+                [ $RETVAL -eq 0 ] && touch $LOCK_FILE
+        else
+                echo "$SERVER is locked."
+                RETVAL=1
+        fi
+}
+do_stop()
+{
+        echo -n $"Stopping $SERVER: "
+        pid=`ps -aefw | grep "$DAEMON $SERVER" | grep -v " grep " | awk '{print $2}'`
+        kill -9 $pid > /dev/null 2>&1 && echo_success || echo_failure
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && rm -f $LOCK_FILE
+}
+
+case "$1" in
+        start)
+                do_start
+                ;;
+        stop)
+                do_stop
+                ;;
+        restart)
+                do_stop
+                do_start
+                ;;
+				status)
+		        if [ -f $LOCK_FILE ]
+		        then
+			    pid=`ps -aefw | grep "$DAEMON $SERVER" | grep -v " grep " | awk '{print $2}'`
+		            if [ -z $pid ]
+		            then
+		                echo "app stopped but lock file exists"
+		            else
+		                echo "app is running with pid $pid"
+
+		            fi
+		        else
+		            echo "Node app stopped"
+		        fi
+		    ;;
+        *)
+                echo "Usage: $0 {start|stop|restart}"
+                RETVAL=1
+esac
+
+exit $RETVAL

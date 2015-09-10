@@ -1,0 +1,309 @@
+<% include ../layout.html %>
+<% include ../sidenav.html %>
+<div class="large-9 medium-8 columns">
+	<section class="card" id="get_following">
+		<header>
+			<h2>
+				<span>GET</span>
+				<code>/friendships/following</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/friendships/following</code>
+		</div>
+		<div class="card-description">
+			<p>returns a list of users the authenticated user is following. Results are given in groups of 20 users and "pages" of results can be navigated through using the since_id and max_id values in subsequent requests. </p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>since_id <span>optional</span></th>
+						<td>Returns results with an ID greater than (more recent than) the specified ID</td>
+					</tr>
+					<tr>
+						<th>max_id <span>optional</span></th>
+						<td>Returns results with an ID less than (older than) or equal to the specified ID</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>POST</td>
+							<td>http://api.punditly.com/1/friendships/following</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+  "data": [
+      {
+        "id": "52e200c8932f4fe10c000001",
+        "updated_at": "2014-02-13T05:23:13.266Z",
+        "username": "deji",
+        "phone": null,
+        "following_count": 12,
+        "followers_count": 90,
+        "profile_image_url": "https://s3.amazonaws.com/cdn.punditly.com/profile_images/52e200c8932f4fe10c000001/deji.jpeg",
+        "is_verified": false,
+        "is_private": false,
+        "location": null,
+        "created_at": "2014-01-24T05:57:28.336Z",
+        "bio": null,
+        "url": null,
+        "name": deji
+      },
+			{
+        "id": "52e200c8932f4fe10c000002",
+        "updated_at": "2014-02-13T05:23:13.266Z",
+        "username": "djmm",
+        "phone": null,
+        "following_count": 62,
+        "followers_count": 12,
+        "profile_image_url": "https://s3.amazonaws.com/cdn.punditly.com/profile_images/52e200c8932f4fe10c000001/photo.jpeg",
+        "is_verified": false,
+        "is_private": false,
+        "location": null,
+        "created_at": "2014-01-24T05:57:28.336Z",
+        "bio": null,
+        "url": null,
+        "name": mighty
+      }
+  ]
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+	<section class="card" id="get_followers">
+		<header>
+			<h2>
+				<span>GET</span>
+				<code>/friendships/followers</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/friendships/followers</code>
+		</div>
+		<div class="card-description">
+			<p>returns a list of users that are following the authenticated user. Results are given in groups of 20 users and "pages" of results can be navigated through using the since_id and max_id values in subsequent requests.</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>since_id <span>optional</span></th>
+						<td>Returns results with an ID greater than (more recent than) the specified ID.</td>
+					</tr>
+					<tr>
+						<th>max_id <span>optional</span></th>
+						<td>Returns results with an ID less than (older than) or equal to the specified ID</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>POST</td>
+							<td>http://api.punditly.com/1/friendships/followers</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+  "data": [
+      {
+        "id": "52e200c8932f4fe10c000001",
+        "updated_at": "2014-02-13T05:23:13.266Z",
+        "username": "deji",
+        "phone": null,
+        "following_count": 12,
+        "followers_count": 90,
+        "profile_image_url": "https://s3.amazonaws.com/cdn.punditly.com/profile_images/52e200c8932f4fe10c000001/deji.jpeg",
+        "is_verified": false,
+        "is_private": false,
+        "location": null,
+        "created_at": "2014-01-24T05:57:28.336Z",
+        "bio": null,
+        "url": null,
+        "name": deji
+      },
+			{
+        "id": "52e200c8932f4fe10c000002",
+        "updated_at": "2014-02-13T05:23:13.266Z",
+        "username": "djmm",
+        "phone": null,
+        "following_count": 62,
+        "followers_count": 12,
+        "profile_image_url": "https://s3.amazonaws.com/cdn.punditly.com/profile_images/52e200c8932f4fe10c000001/photo.jpeg",
+        "is_verified": false,
+        "is_private": false,
+        "location": null,
+        "created_at": "2014-01-24T05:57:28.336Z",
+        "bio": null,
+        "url": null,
+        "name": mighty
+      }
+  ]
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+	<section class="card" id="post_create">
+		<header>
+			<h2>
+				<span>POST</span>
+				<code>/friendships/create</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/friendships/create</code>
+		</div>
+		<div class="card-description">
+			<p>Allows the authenticating user to create a friendship with the user specified by the id parameter. Returns the befriended user when successful</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>id <span>required</span></th>
+						<td>The User ID of the user you want to follow.</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>POST</td>
+							<td>http://api.punditly.com/1/friendships/create</td>
+						</tr>
+						<tr>
+							<td>POST Data</td>
+							<td>id=1234</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+  "data": {
+    "id": "1234",
+    "updated_at": "2014-02-13T05:23:13.266Z",
+    "username": "deji",
+    "phone": null,
+    "following_count": 12,
+    "followers_count": 91,
+    "profile_image_url": "https://s3.amazonaws.com/cdn.punditly.com/profile_images/52e200c8932f4fe10c000001/deji.jpeg",
+    "is_verified": false,
+    "is_private": false,
+    "location": null,
+    "created_at": "2014-01-24T05:57:28.336Z",
+    "bio": null,
+    "url": null,
+    "name": deji
+  }
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+	<section class="card" id="post_destroy">
+		<header>
+			<h2>
+				<span>POST</span>
+				<code>/friendships/destroy</code>
+			</h2>
+		</header>
+		<div class="card-info">
+			<code>http://api.punditly.com/1/friendships/destroy</code>
+		</div>
+		<div class="card-description">
+			<p>Allows the authenticating user to unfollow the user specified by the id parameter. Returns the unfollowed user when successful</p>
+			<table>
+				<caption>
+					<strong>Parameters</strong>
+					<i></i>
+				</caption>
+				<tbody>
+					<tr>
+						<th>id <span>required</span></th>
+						<td>The User ID of the user you want to unfollow.</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="example">
+				<h3>Example Request</h3>
+				<table>
+					<tbody>
+						<tr>
+							<td>POST</td>
+							<td>http://api.punditly.com/1/friendships/destroy</td>
+						</tr>
+						<tr>
+							<td>POST Data</td>
+							<td>id=1234</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="code-response">
+				<header><h5>Response</h5></header>
+				<pre class="prettyprint"><code>
+{
+  "response": {
+    "status": 200
+  },
+  "data": {
+    "id": "1234",
+    "updated_at": "2014-02-13T05:23:13.266Z",
+    "username": "deji",
+    "phone": null,
+    "following_count": 12,
+    "followers_count": 90,
+    "profile_image_url": "https://s3.amazonaws.com/cdn.punditly.com/profile_images/52e200c8932f4fe10c000001/deji.jpeg",
+    "is_verified": false,
+    "is_private": false,
+    "location": null,
+    "created_at": "2014-01-24T05:57:28.336Z",
+    "bio": null,
+    "url": null,
+    "name": deji
+  }
+}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+</div>
+<% include ../footer.html %>
