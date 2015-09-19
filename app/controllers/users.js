@@ -12,12 +12,10 @@ exports.read = function(req, res, next) {
 	var workflow = req.app.util.workflow(req, res);
 
 	// return information about a user
-	var id = req.param('id');
+	var id = req.params.id;
 
-	if (req.params.id.length < 24) { // make sure it's a valid objectid string of 24 hex chars
-		workflow.response.code = 'INVALID_USER_ID';
-		workflow.response.message = 'The requested user Id is not valid';
-		return workflow.emit('bad_request');
+	if (!req.app.db.models.User.isValid(req.params.id)) { // make sure it's a valid objectid
+		return workflow.emit('not_found', 'INVALID_USER_ID');
 	}
 
 	req.app.db.models.User.findById(id, function(err,person){
@@ -30,12 +28,7 @@ exports.read = function(req, res, next) {
 		}
 	});
 };
-
-exports.find = function(req, res, next){
-
-};
-
-
+ 
 /**
  * POST account/settings
  * Updates the authenticating user's accounts settings.
@@ -51,23 +44,19 @@ exports.settings = function(req, res, next) {
  */
 exports.profile = function(req, res, next){
 	var workflow = req.app.util.workflow(req, res);
-	req.app.db.models.User.findById(req.signedCookies['user_id'], function(err, person){
+	req.app.db.models.User.findById(req.signedCookies['user_id'], function(err, person){console.log(req.signedCookies['user_id']);
 		if (err) {
 			return next(err);
 		} else if (person === null) {
-			workflow.response.code = 'UserNotFound';
 			return workflow.emit('not_found');
 		} else {
 			var doEdit = function(key, cb){
-				var editable = ['name', 'bio', 'location', 'url'];
-				if (_.contains(editable, key)) {
-					person[key] = req.body[key];
-				}
-
+				person[key] = req.body[key] || person[key];
 				return cb(null);
 			};
 
-			async.each(_.keys(req.body), doEdit, function(err){
+			var editable = ['name', 'bio', 'location', 'url'];
+			async.each(editable, doEdit, function(err){
 				if (!err) {
 					person.save(function(e, data){
 						res.send(JSON.stringify(data));

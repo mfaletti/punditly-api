@@ -36,11 +36,19 @@ exports.find = function(req, res, next) {
 };
 
 exports.read = function(req, res, next) {
+	var workflow = req.app.util.workflow(req, res);
+	
+	if (!req.app.db.models.Team.isValid(req.params.id)) { // make sure it's a valid objectid
+		return workflow.emit('not_found', 'INVALID_TEAM_ID');
+	}
+
 	req.app.db.models.Team.findById(req.params.id, function(err, team){
 		if (err) {
 			return next(err);
+		}else if (!team) {
+			return workflow.emit('not_found');
+		} else {
+			res.send(JSON.stringify(team));
 		}
-
-		res.send(JSON.stringify(team));
 	});
 };

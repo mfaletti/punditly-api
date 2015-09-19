@@ -7,12 +7,11 @@ exports = module.exports = function(req, res){
 
 	workflow.on('exception', function(err){
 		workflow.response.message = 'An internal service error has occurred. Plase try again another time.';
-		workflow.response.code = 500;
+		workflow.response.code = workflow.response.code || 'InternalServerError';
 		res.send(500, workflow.response);
 	});
 
 	workflow.on('bad_request', function(err){
-		workflow.response.code = 400;
 		res.send(400, workflow.response);
 	});
 
@@ -22,8 +21,11 @@ exports = module.exports = function(req, res){
 	});
 
 	workflow.on('not_found', function(err){
-		workflow.response.code = 404;
-		workflow.response.message = 'The requested resource was not found';
+		workflow.response = err ? req.app.error_codes[err] : {
+			code: 10,
+			message: 'The requested resource was not found'
+		}
+
 		res.send(404, workflow.response);
 	});
 

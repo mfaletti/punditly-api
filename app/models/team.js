@@ -10,5 +10,6 @@ exports = module.exports = function(app, mongoose) {
 	});
 
 	teamSchema.plugin(require('../plugins/pagedFind'));
+	teamSchema.plugin(require('../plugins/customFunctions'));
 	app.db.model('Team', teamSchema, 'teams');
 };

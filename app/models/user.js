@@ -56,5 +56,7 @@ exports = module.exports = function(app, mongoose) {
 		next();
 	});
 
+	userSchema.plugin(require('../plugins/pagedFind'));
+	userSchema.plugin(require('../plugins/customFunctions'));
 	app.db.model('User', userSchema, 'users');
 };
