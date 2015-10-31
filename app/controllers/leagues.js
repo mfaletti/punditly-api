@@ -5,7 +5,7 @@ exports.find = function(req,res,next) {
 			return next(err);
 		}
 
-		res.send(JSON.stringify(results));
+		res.json(results);
 	});
 };
 exports.getTeams = function(req,res,next) {
@@ -32,7 +32,7 @@ exports.getTeams = function(req,res,next) {
 				return next(err);
 			}
 
-			res.send(JSON.stringify(teams));
+			res.json(teams);
 		});
 	});
 };

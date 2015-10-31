@@ -2,6 +2,7 @@ var
   bcrypt = require('bcryptjs'),
   v = require('validator'),
 	crypto = require('crypto'),
+	jwt = require('jsonwebtoken'),
   async = require('async');
 
 
@@ -13,39 +14,40 @@ var
 exports.login = function(req, res, next){
 	var
 		workflow = req.app.util.workflow(req, res),
-		params = req.body,
-		errors = [];
+		params = req.body;
 
 	if (!params.username) {
-		errors.push('Username is Required');
+		return workflow.emit('bad_request', 'USER_NAME_REQUIRED');
 	}
 
 	if (!params.password) {
-		errors.push('Password is Required');
-	}
-
-	if (errors.length) {
-		workflow.response.message = errors[0];
-		return workflow.emit('bad_request');
+		return workflow.emit('bad_request', 'PASSWORD_REQUIRED')
 	}
 
 	req.app.db.models.User.findByUsername(params.username, function(error, person){
 		if (error) {
 			return next(err);
 		} else if (!person) {
-			workflow.response.message = "Invalid Username or Password";
 			return workflow.emit('auth');
 		} else {
 			req.app.db.models.User.validatePassword(params.password, person.passwordHash, function(err,status){
 				if (status) {
-					var seed = crypto.randomBytes(20);
-					var id = crypto.createHash('sha1').update(seed).digest('hex');
-					res.cookie('sessionId', id, {signed:true});
-					res.cookie('user_id', person.id, {signed:true});
+					var payload = {
+						sub: person._id,
+						scope: person.roles
+					};
 
-					res.send(JSON.stringify(person));
+					var token = jwt.sign(payload, req.app.config.jwt_secret,{
+						issuer: 'www.punditly.com',
+						audience: 'www.punditly.com',
+						expiresInMinutes: 60*24*30*6
+					});
+
+					//var seed = crypto.randomBytes(20);
+					//var id = crypto.createHash('sha1').update(seed).digest('hex');
+					res.cookie('AUTH_TOKEN', token, {httpOnly: true});
+					res.json({token:token});
 				} else {
-					workflow.response.message = "Invalid Username or Password";
 					return workflow.emit('auth');
 				}
 			});
@@ -58,10 +60,8 @@ exports.login = function(req, res, next){
  * logs a user out
  */
 exports.logout = function(req, res, next){
-	var id = req.signedCookies['sessionId'];
-	if (id) {
-		res.clearCookie('sessionId', {path: '/' });
-		res.clearCookie('user_id', {path: '/' });
+	if (req.token) {
+		res.clearCookie('AUTH_TOKEN', {path: '/' });
 	}
 
 	res.send(200);
@@ -149,9 +149,21 @@ exports.register = function (req, res, next) {
   			userModel.save(function(err, user){
 					if (err) {
 						return workflow.emit('exception');
-					}
+					} else {
+						var payload = {
+							sub: person._id,
+							scope: person.roles
+						};
 
-					res.send(201, user.toJSON());
+						var token = jwt.sign(payload, req.app.config.jwt_secret,{
+							issuer: 'www.punditly.com',
+							audience: 'www.punditly.com',
+							expiresInMinutes: 60*24*30*6
+						});
+
+						res.cookie('AUTH_TOKEN', token, {httpOnly: true});
+						res.status(201).send({token:token,data: user.toJSON()});
+					} 
 				});
   		});
   	}

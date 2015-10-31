@@ -1,19 +1,23 @@
 'use strict';
 
 exports.find = function(req, res, next) {
-	req.query.fixture = req.query.fixture ? req.query.fixture : '';
+	//req.query.fixture = req.query.fixture ? req.query.fixture : '';
 	req.query.limit = req.query.limit ? parseInt(req.query.limit, null) : 20;
 	req.query.page = req.query.page ? parseInt(req.query.page, null) : 1;
 	req.query.sort = req.query.sort ? req.query.sort : '_id';
 
 	var filters = {};
 
-	if (req.query.name) {
-		filters.name = new RegExp('^.*?'+ req.query.name +'.*$', 'i');
+	if (req.query.league) {
+		filters.competition = new RegExp('^.*?'+ req.query.league +'.*$', 'i');
 	}
 
-	if (req.query.league) {
-		filters.league = req.query.league;
+	/*if (req.query.name) {
+		filters.competition = new RegExp('^.*?'+ req.query.league +'.*$', 'i');
+	}*/
+
+	if (req.query.sort === 'league') {
+		req.query.sort = 'competition';
 	}
 
 	req.app.db.models.Fixture.pagedFind({

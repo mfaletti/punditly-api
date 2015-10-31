@@ -19,7 +19,8 @@ exports.config = function() {
 
 exports.port = process.env.PORT || 8001;
 exports.env = process.env.NODE_ENV || 'dev';
-exports.cryptoKey = 'Pund1Tly$';
+exports.cryptoKey = process.env.CRYPTO_KEY || 'Pund1Tly$';
+exports.jwt_secret = process.env.JWT_SECRET || 'Pund1tly';
 exports.mongodb = {
   uri: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost/pd'
 };

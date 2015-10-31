@@ -31,7 +31,7 @@ exports.find = function(req, res, next) {
 
     res.header("Cache-Control", "no-cache, no-store, must-revalidate");
     results.filters = req.query;
-    res.send(JSON.stringify(results));
+    res.send(results);
 	});
 };
 
@@ -48,7 +48,7 @@ exports.read = function(req, res, next) {
 		}else if (!team) {
 			return workflow.emit('not_found');
 		} else {
-			res.send(JSON.stringify(team));
+			res.send(team);
 		}
 	});
 };

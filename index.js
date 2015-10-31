@@ -7,8 +7,8 @@ var
 	bodyParser = require('body-parser'),
 	cookieParser = require('cookie-parser'),
 	cookieSession = require('cookie-session'),
-	session = require('express-session'),
 	logger = require('morgan'),
+	passport = require('passport'),
 	router = express.Router();
 
 app.config = config;
@@ -32,6 +32,7 @@ fs.readdirSync(models_path).forEach(function (file) {
 app.disable('x-powered-by');
 app.set('env', config.env);
 app.set('port', config.port);
+app.set('jwt-secret', config.jwt_secret);
 app.set('views', __dirname + '/app/views');
 app.set('uploads', __dirname + '/public/uploads/');
 // register ejs as html
@@ -64,6 +65,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser(config.cryptoKey));
 app.use(cookieSession({secret: config.cryptoKey}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 //config express in dev environment
 if (app.get('env') === 'dev') {

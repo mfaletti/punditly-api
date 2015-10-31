@@ -44,7 +44,7 @@ exports.settings = function(req, res, next) {
  */
 exports.profile = function(req, res, next){
 	var workflow = req.app.util.workflow(req, res);
-	req.app.db.models.User.findById(req.signedCookies['user_id'], function(err, person){console.log(req.signedCookies['user_id']);
+	req.app.db.models.User.findById(req.signedCookies['user_id'], function(err, person){
 		if (err) {
 			return next(err);
 		} else if (person === null) {
