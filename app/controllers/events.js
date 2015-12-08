@@ -6,9 +6,7 @@ exports.find = function(req, res, next){
 	var id = req.params.id || '';
 
 	if (req.params.id.length < 24) { // make sure it's a valid objectid string of 24 hex chars
-		workflow.response.code = 'INVALID_GAME_ID';
-		workflow.response.message = 'The requested game Id is not valid';
-		return workflow.emit('bad_request');
+		return workflow.emit('bad_request', 'INVALID_GAME_ID');
 	}
 
 	req.query.limit = req.query.limit ? parseInt(req.query.limit, null) : 20;
@@ -39,15 +37,15 @@ exports.create = function(req, res){
 
 	workflow.on('validate', function() {
 		if (!req.body.gameId) {
-			workflow.response.code = 'NO_GAME_ID';
-			workflow.response.message = 'game ID is required';
-			return workflow.emit('bad_request');
+			return workflow.emit('bad_request', 'NO_GAME_ID');
 		}
 
 		if (!req.body.type) {
-			workflow.response.code = 'NO_EVENT_TYPE';
-			workflow.response.message = 'Event type is required';
-			return workflow.emit('bad_request');
+			return workflow.emit('bad_request', 'NO_EVENT_TYPE');
+		}
+
+		if (!req.body.details) {
+			return workflow.emit('bad_request', 'NO_EVENT_DETAILS');
 		}
 
 		return workflow.emit('addEvent');
@@ -58,43 +56,36 @@ exports.create = function(req, res){
 		data = req.body,
 		fieldsToSet = {
 			gameId: data.gameId,
+			created_at: new Date(),
 			type: data.type,
-			details:{}
+			details:{},
 		};
 
 	  switch (data.type) {
 			case 'goal':
 
 				if (!data.details.player) {
-					workflow.response.code = 'NO_SCORER_DATA';
-					workflow.response.message = 'Scorer is required';
-					return workflow.emit('bad_request');
+					return workflow.emit('bad_request', 'NO_SCORER_DATA');
 				}
 
 				if (!data.details.scoring_side) {
-					workflow.response.code = 'NO_SCORING_SIDE_DATA';
-					workflow.response.message = 'Scoring side is required';
-					return workflow.emit('bad_request');
+					return workflow.emit('bad_request', 'NO_SCORING_SIDE_DATA');
 				}
 
 				if (!data.details.score) {
-					workflow.response.code = 'NO_SCORE_DATA';
-					workflow.response.message = 'Score is required';
-					return workflow.emit('bad_request');
+					return workflow.emit('bad_request', 'NO_SCORE_DATA');
 				}
 
-				fieldsToSet.details.player = data.details.scorer;
-				fieldsToSet.details.penalty = data.details.penalty || '';
-				fieldsToSet.details.ownGoal = data.details.ownGoal || '';
+				fieldsToSet.details.player = data.details.player;
+				fieldsToSet.details.penalty = data.details.penalty || false;
+				fieldsToSet.details.ownGoal = data.details.ownGoal || false;
 				fieldsToSet.details.scoring_side = data.details.scoring_side;
 				fieldsToSet.details.score = data.details.score;
 				break;
 			case 'yellow_card':
 			case 'red_card':
 				if (!data.details.player) {
-					workflow.response.code = 'NO_PLAYER_DATA';
-					workflow.response.message = 'Player is required';
-					return workflow.emit('bad_request');
+					return workflow.emit('bad_request', 'NO_PLAYER_ID');
 				}
 
 				fieldsToSet.details.player = data.details.player;
@@ -106,7 +97,7 @@ exports.create = function(req, res){
 				return workflow.emit('exception', err);
 			}
 
-			res.send(JSON.stringify(event));
+			res.send(event);
 		});
 	});
 

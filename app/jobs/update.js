@@ -1,22 +1,23 @@
 var start = new Date();
 
 /*
- * compute summary statistics.
- * find the score with the highest number of occurence (mode).
+ * compute central tendency/summary statistics.
+ * find the score with the highest number of observations (mode).
  * using mode instead of mean to protect from influence of outliers i.e data values that are unusual compared to others.
+ * for example, if scores array is [1,1,1,2,2,2,2,2,3,3,3], score will be set '2' since it has the highest frequency.
  */
-function mode(doc) {
-	var array = doc.scores;
-	if (array.length == 0) {
+function summarize(doc) {
+	var scores = doc.scores;
+	if (scores.length == 0) {
    	return null;
 	}
 
 	var modeMap = {};
-	var maxEl = array[0], maxCount = 1;
+	var maxEl = scores[0], maxCount = 1;
 
-	for (var i = 0; i < array.length; i++)
+	for (var i = 0; i < doc.total; i++)
 	{
-   	var el = array[i];
+   	var el = scores[i];
    	if (modeMap[el] == null) {
    		modeMap[el] = 1;
 		} else {
@@ -31,24 +32,26 @@ function mode(doc) {
 
 	switch (doc.scoring_side) {
 		case 'A':
-			db.games.update({_id:ObjectId(doc._id)}, {$set:{awayScore:maxEl}});
+			db.fixtures.update({_id:ObjectId(doc._id)}, {$set:{awayScore:maxEl}});
 			break;
 		case 'H':
-			db.games.update({_id:ObjectId(doc._id)}, {$set:{homeScore:maxEl}});
+			db.fixtures.update({_id:ObjectId(doc._id)}, {$set:{homeScore:maxEl}});
 			break;
 		default:
 	}
 };
 
+// aggregate goal events over the last minute (home and away teams) and update the fixtures collection
+// group summary collection by game id and scores.
+// after flattening, summary collection should resemble  
+// { "_id" : "5521fc4af3b9479f13fa4bd7", "total" : 6, "scores" : [ 3, 3, 3, 2, 2, 3 ], "scoring_side" : "H" }
 use pd;
 
-// aggregate "goal" events over the last minute (home and away teams)
 ['A','H'].forEach(function(element){
-	db.summary.remove({});
 
 	db.events.aggregate(
 		[
-			{$match : {created_at: {$lte: new Date(new Date().valueOf() - 60000)}}},
+			{$match : {created_at: {$gte: new Date(ISODate().getTime() - 1000 * 60 * 1)}}},
 			{$match : {type: "goal"}},
 			{$match : {'details.scoring_side': element}},
 			{$group: {_id: "$gameId", total: {$sum:1}, scores:{$push:"$details.score"}}},
@@ -56,9 +59,9 @@ use pd;
 		]
 	);
 
-	// insert "scoring_side" field in summary collection so we can use this field later to update the game collection.
+	// insert "scoring_side" field in summary collection so we can use this field later to update the fixtures collection.
 	db.summary.update({}, {$set:{"scoring_side":element}}, false, true);
-	db.summary.find().forEach(mode);
+	db.summary.find().forEach(summarize);
 });
 
 var end = new Date();

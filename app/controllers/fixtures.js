@@ -12,9 +12,21 @@ exports.find = function(req, res, next) {
 		filters.competition = new RegExp('^.*?'+ req.query.league +'.*$', 'i');
 	}
 
-	/*if (req.query.name) {
-		filters.competition = new RegExp('^.*?'+ req.query.league +'.*$', 'i');
-	}*/
+	if (req.query.min_timestamp) {
+		if (!isNaN(req.query.min_timestamp)) {
+			filters.date = {
+				$gte: new Date(Number(req.query.min_timestamp))
+			}
+		}
+	}
+
+	if (req.query.max_timestamp) {
+		if (!isNaN(req.query.max_timestamp)) {
+			filters.date = {
+				$lt: new Date(Number(req.query.max_timestamp))
+			}
+		}
+	}
 
 	if (req.query.sort === 'league') {
 		req.query.sort = 'competition';
@@ -31,7 +43,7 @@ exports.find = function(req, res, next) {
 	  }
 
     res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.send(JSON.stringify(results));
+    res.json(results);
 	});
 };
 
