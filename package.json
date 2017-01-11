@@ -39,5 +39,8 @@
     "grunt-contrib-concat": "0.3.0",
     "grunt-shell": "0.7.0",
     "grunt-rsync": "0.6.2"
+  },
+  "scripts": {
+    "start":"node index.js"
   }
 }
