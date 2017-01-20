@@ -1,23 +1,22 @@
-var mongoose = require('mongoose'),
-	User = require('../models/user');
-mongoose.connect('mongodb://localhost/pd');
-mongoose.connection.on('error', function() {});
+'use strict';
 
 module.exports = function(app){
 	/**
-	 * GET api.punditly.com/1/friendships/following
+	 * GET /1/friendships/following
 	 * returns a cursored collection of users the authenticated user is following.
 	 */
 	app.get('/1/friendships/following', auth, function(req,res){
-		var id = req.signedCookies['user_id'];
-		var max = req.param('max_id') || '';
-		var since = req.param('since_id') || '';
+		var 
+		id = req.signedCookies['user_id'],
+		max = req.param('max_id') || '',
+		since = req.param('since_id') || '',
+		workflow = req.app.util.workflow(req, res);
 		
-		User.model.findOne({id:id}, function(err,user){
+		req.app.db.models.User.findOne({id:id}, function(err,user){
 			if (!user) {
-				
+				return workflow.emit('not_found');
 			} else {
-				var query = User.model.find();
+				var query = req.app.db.models.User.find();
 				query.where({id: {$in: user.following}});
 				
 				if (max && max.length == 24) {
@@ -40,19 +39,21 @@ module.exports = function(app){
 	});
 	
 	/**
-	 * GET api.punditly.com/1/friendships/followers
+	 * GET /1/friendships/followers
 	 * Returns the list of users that are following the authenticated user
 	 */
 	app.get('/1/friendships/followers', auth, function(req,res){
-		var id = req.signedCookies['user_id'];
-		var max = req.param('max_id') || '';
-		var since = req.param('since_id') || '';
+		var 
+		id = req.signedCookies['user_id'],
+		max = req.param('max_id') || '',
+		since = req.param('since_id') || '',
+		workflow = req.app.util.workflow(req, res);
 
-		User.model.findOne({id:id}, function(err,user){
+		req.app.db.models.User.findOne({id:id}, function(err,user){
 			if (!user) {
-				res.send(200);
+				return workflow.emit('not_found');
 			} else {
-				var query = User.model.find();
+				var query = req.app.db.models.User.find();
 				query.where({following: {$in: [user.id]}});
 
 				if (max && max.length == 24) {
@@ -75,34 +76,38 @@ module.exports = function(app){
 	});
 	
 	/**
-	 * POST api.punditly.com/1/friendship/create
+	 * POST /1/friendship/create
 	 * Allows the authenticating user to create a friendship with the user specified by the id parameter
 	 * Returns the befriended user if successful
 	 */
 	app.post('/1/friendships/create', auth, function(req,res){
-		var params = req.body;
+		var 
+		params = req.body,
+		workflow = req.app.util.workflow(req, res);
+		
 		if (!params.id){
-			res.send(400, {response:{status:400}, error:{message: "no Id specified"}});
-			return;
+			return workflow.emit('bad_request');
 		} else if (params.id == req.signedCookies['user_id']) {
-			res.send(400, {response:{status:400}, error:{message: "You can't follow yourself"}});
-			return;
+			workflow.response.code = 'CANNOT_FOLLOW_SELF';
+			return workflow.emit('bad_request');
 		}
 		
 		// verify the followed user exists
-		User.model.findOne({id:params.id}, function(err,user){
+		req.app.db.models.User.findOne({id:params.id}, function(err,user){
 			if (!user) {
-				res.send(404, {response:{status:404}, error:{message :"Followed User Not Found"}});
+				workflow.response.code = "REQUESTED_USER_NOT_FOUND";
+				return workflow.emit('not_found');
 			} else {
 				// make sure we're not already following the requested user
-				User.model.findOneAndUpdate({id:req.signedCookies['user_id'],following:{$nin:[user.id]}}, 
+				req.app.db.models.User.model.findOneAndUpdate({id:req.signedCookies['user_id'],following:{$nin:[user.id]}}, 
 					{$push:{following:user.id}},
 					{safe:true},
 					function(err,model){
 						if (err) {
-							res.send(500,{response:{status:500}});
+							return workflow.emit('exception');
 						} else if (!model) { // user is currently following the requested user
-							res.send(400, {response:{status:400},error:{message:"Already Following"}});
+							workflow.response.code = 'ALREADY_FOLLOWING_RESOURCE';
+							return workflow.emit('bad_request');
 						} else {
 							++model.following_count; // increment following user's following count
 							++user.followers_count; //increment followed user's followers count
@@ -118,35 +123,39 @@ module.exports = function(app){
 	});
 	
 	/**
-	 * POST api.punditly.com/1/friendship/destroy
+	 * POST 1/friendship/destroy
 	 * Allows the authenticating user to unfollow the user specified by the id parameter.
 	 * Returns the unfollowed user if successful.
 	 * @params id
 	 */
 	app.post('/1/friendships/destroy', auth, function(req,res){
-		var params = req.body;
+		var 
+		params = req.body,
+		workflow = req.app.util.workflow(req, res);
+
 		if (!params.id){
-			res.send(400, {response:{status:400}, error:{message: "no Id specified"}});
-			return;
+			return workflow.emit('bad_request');
 		} else if (params.id == req.signedCookies['user_id']) {
-			res.send(400, {response:{status:400}, error:{message: "You can't unfollow yourself"}});
-			return;
+			workflow.response.code = 'CANNOT_UNFOLLOW';
+			return workflow.emit('bad_request');
 		}
 		
 		// verify the followed user exists
-		User.model.findOne({id:params.id}, function(err,user){
+		req.app.db.models.User.model.findOne({id:params.id}, function(err,user){
 			if (!user) {
-				res.send(404, {response:{status:404}, error:{message :"User Not Found"}});
+				workflow.response.code = 'USER_NOT_FOUND';
+				return workflow.emit('bad_request');
 			} else {
-				// make sure we're not already following the requested user
-				User.model.findOneAndUpdate({id:req.signedCookies['user_id'],following:{$in:[user.id]}}, 
+				// make sure we're currently following the requested user
+				req.app.db.models.User.model.findOneAndUpdate({id:req.signedCookies['user_id'],following:{$in:[user.id]}}, 
 					{$pull:{following:user.id}},
 					{safe:true},
 					function(err,model){
 						if (err) {
-							res.send(500,{response:{status:500}});
+						return workflow.emit('exception');
 						} else if (!model) { // user is currently not following the requested user
-							res.send(400, {response:{status:400},error:{message:"Not Following"}});
+							workflow.response.code = "CANNOT_UNFOLLOW_USER";
+							return workflow.emit('bad_request');
 						} else {
 							--model.following_count; // increment following user's following count
 							--user.followers_count; //increment followed user's followers count
